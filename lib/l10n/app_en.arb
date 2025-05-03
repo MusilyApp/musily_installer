@@ -1,0 +1,81 @@
+{
+    "@@locale": "en",
+    "appTitle": "Musily Installer",
+    "updateTitle": "Update Musily",
+    "installTitle": "Install Musily",
+    "uninstallTitle": "Uninstall Musily",
+    "warningUninstall": "Warning: Uninstall Musily",
+    "warningUninstallMessage": "This will remove Musily from your system. Your music library and preferences will be deleted.",
+    "uninstallConfirmation": "I understand that this action cannot be undone",
+    "removeAppData": "Remove all app data",
+    "uninstallButton": "Uninstall Musily",
+    "updateAvailable": "Update Available",
+    "currentVersion": "Current version: {version}",
+    "@currentVersion": {
+        "placeholders": {
+            "version": {
+                "type": "String"
+            }
+        }
+    },
+    "installationProgress": "Installation Progress",
+    "uninstallationProgress": "Uninstallation Progress",
+    "updateProgress": "Update Progress",
+    "showTerminalOutput": "Show terminal output",
+    "installationComplete": "Installation Complete",
+    "uninstallationComplete": "Uninstallation Complete",
+    "updateComplete": "Update Complete",
+    "installationCompleteMessage": "Musily has been successfully installed on your system.",
+    "uninstallationCompleteMessage": "Musily has been successfully removed from your system.",
+    "updateCompleteMessage": "Musily has been successfully updated.",
+    "runAfterInstall": "Run Musily after installation",
+    "finish": "Finish",
+    "next": "Next",
+    "back": "Back",
+    "cancel": "Cancel",
+    "error": "Error: {message}",
+    "@error": {
+        "placeholders": {
+            "message": {
+                "type": "String"
+            }
+        }
+    },
+    "changeLanguage": "Change language",
+    "@changeLanguage": {
+        "description": "Tooltip for the language selection button"
+    },
+    "checkingMusily": "Checking if Musily is running...",
+    "foundRunningMusily": "Found running Musily process (PID: {pid}), terminating...",
+    "@foundRunningMusily": {
+        "description": "Message shown when a running Musily process is found",
+        "placeholders": {
+            "pid": {
+                "type": "String",
+                "description": "Process ID of the running Musily instance"
+            }
+        }
+    },
+    "musilyTerminated": "Musily process terminated successfully",
+    "removingAppFiles": "Removing application files...",
+    "removingAppData": "Removing application data...",
+    "appDataRemoved": "Application data removed successfully",
+    "failedRemoveData": "Failed to remove application data: {error}",
+    "@failedRemoveData": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
+    "updatingDesktopDb": "Updating desktop database...",
+    "failedUpdateDb": "Failed to update desktop database",
+    "unableToTerminate": "Unable to terminate Musily. Please close it manually.",
+    "installingDependencies": "Installing missing dependencies...",
+    "dependenciesInstalled": "Dependencies installed successfully.",
+    "failedInstallDeps": "Failed to install dependencies",
+    "backingUpConfig": "Backing up configuration...",
+    "restoringConfig": "Restoring configuration...",
+    "installingIcon": "Installing application icon...",
+    "creatingDesktopEntry": "Creating desktop entry..."
+}

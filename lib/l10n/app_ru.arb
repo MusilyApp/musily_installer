@@ -1,0 +1,81 @@
+{
+    "@@locale": "ru",
+    "appTitle": "Установщик Musily",
+    "updateTitle": "Обновить Musily",
+    "installTitle": "Установить Musily",
+    "uninstallTitle": "Удалить Musily",
+    "warningUninstall": "Внимание: Удаление Musily",
+    "warningUninstallMessage": "Это удалит Musily из вашей системы. Ваша музыкальная библиотека и настройки будут удалены.",
+    "uninstallConfirmation": "Я понимаю, что это действие нельзя отменить",
+    "removeAppData": "Удалить все данные приложения",
+    "uninstallButton": "Удалить Musily",
+    "updateAvailable": "Доступно Обновление",
+    "currentVersion": "Текущая версия: {version}",
+    "@currentVersion": {
+        "placeholders": {
+            "version": {
+                "type": "String"
+            }
+        }
+    },
+    "installationProgress": "Прогресс Установки",
+    "uninstallationProgress": "Прогресс Удаления",
+    "updateProgress": "Прогресс Обновления",
+    "showTerminalOutput": "Показать вывод терминала",
+    "installationComplete": "Установка Завершена",
+    "uninstallationComplete": "Удаление Завершено",
+    "updateComplete": "Обновление Завершено",
+    "installationCompleteMessage": "Musily успешно установлен в вашей системе.",
+    "uninstallationCompleteMessage": "Musily успешно удален из вашей системы.",
+    "updateCompleteMessage": "Musily успешно обновлен.",
+    "runAfterInstall": "Запустить Musily после установки",
+    "finish": "Завершить",
+    "next": "Далее",
+    "back": "Назад",
+    "cancel": "Отмена",
+    "error": "Ошибка: {message}",
+    "@error": {
+        "placeholders": {
+            "message": {
+                "type": "String"
+            }
+        }
+    },
+    "changeLanguage": "Изменить язык",
+    "@changeLanguage": {
+        "description": "Tooltip for the language selection button"
+    },
+    "checkingMusily": "Проверка, запущен ли Musily...",
+    "foundRunningMusily": "Найден запущенный процесс Musily (PID: {pid}), завершение...",
+    "@foundRunningMusily": {
+        "description": "Message shown when a running Musily process is found",
+        "placeholders": {
+            "pid": {
+                "type": "String",
+                "description": "Process ID of the running Musily instance"
+            }
+        }
+    },
+    "musilyTerminated": "Процесс Musily успешно завершен",
+    "removingAppFiles": "Удаление файлов приложения...",
+    "removingAppData": "Удаление данных приложения...",
+    "appDataRemoved": "Данные приложения успешно удалены",
+    "failedRemoveData": "Не удалось удалить данные приложения: {error}",
+    "@failedRemoveData": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
+    "updatingDesktopDb": "Обновление базы данных рабочего стола...",
+    "failedUpdateDb": "Не удалось обновить базу данных рабочего стола",
+    "unableToTerminate": "Не удается завершить Musily. Пожалуйста, закройте его вручную.",
+    "installingDependencies": "Установка недостающих зависимостей...",
+    "dependenciesInstalled": "Зависимости успешно установлены.",
+    "failedInstallDeps": "Не удалось установить зависимости",
+    "backingUpConfig": "Резервное копирование конфигурации...",
+    "restoringConfig": "Восстановление конфигурации...",
+    "installingIcon": "Установка значка приложения...",
+    "creatingDesktopEntry": "Создание ярлыка в меню приложений..."
+}
