@@ -96,18 +96,17 @@ class InstallerController extends GetxController with PageControllerMixin {
       installProgress = 0.6;
       update();
 
-      const appPath = 'assets/app';
-      await LinuxService.copyAppFiles(appPath);
+      await LinuxService.copyAppFiles();
 
       terminalOutput += 'Installing application icon...\n';
       installProgress = 0.7;
       update();
-      await LinuxService.installIcon(appPath);
+      await LinuxService.installIcon();
 
       terminalOutput += 'Creating desktop entry...\n';
       installProgress = 0.8;
       update();
-      await LinuxService.installDesktopFile(appPath);
+      await LinuxService.installDesktopFile();
 
       try {
         terminalOutput += '${l10n.updatingDesktopDb}\n';

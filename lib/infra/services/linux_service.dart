@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:path/path.dart' as path;
+import 'package:flutter/services.dart' show rootBundle;
 
 enum InstallState { notInstalled, installed, readyToUninstall }
 
@@ -8,10 +9,14 @@ class LinuxService {
     final homeDir = Platform.environment['HOME'];
     if (homeDir == null) throw Exception('Could not get HOME directory');
 
-    // First check if this is an uninstaller (empty assets)
-    final assetsPath = Directory('assets/app');
-    if (!await assetsPath.exists() ||
-        (await assetsPath.list().toList()).isEmpty) {
+    // Check if this is an uninstaller by checking for a specific asset
+    try {
+      // Try to load a small asset that should always be present in your app
+      // but would be missing in the uninstaller
+      await rootBundle.load('assets/app/musily.tar.gz');
+    } catch (e) {
+      // If we can't load the marker file, this is probably an uninstaller
+      print('Installer marker not found, assuming uninstaller mode');
       return InstallState.readyToUninstall;
     }
 
@@ -67,66 +72,82 @@ class LinuxService {
     }
   }
 
-  static Future<void> installIcon(String assetsPath) async {
+  static Future<void> installIcon() async {
     final homeDir = Platform.environment['HOME'];
     if (homeDir == null) throw Exception('Could not get HOME directory');
 
     final iconDir = Directory(path.join(homeDir, '.local', 'share', 'icons'));
     await iconDir.create(recursive: true);
 
-    final iconSource = File(
-      path.join(
-        assetsPath,
-        'data',
-        'flutter_assets',
-        'assets',
-        'icons',
-        'app.musily.music.svg',
-      ),
-    );
     final iconDest = File(path.join(iconDir.path, 'app.musily.music.svg'));
 
-    // Copy with overwrite if exists
-    if (await iconDest.exists()) {
-      await iconDest.delete();
+    // Try to load the SVG icon from Flutter assets
+    try {
+      final iconSourceDir = Directory(path.join(homeDir, '.musily', 'data',
+          'flutter_assets', 'assets', 'icons', 'app.musily.music.svg'));
+      final iconData = File(iconSourceDir.path);
+      await iconDest.writeAsBytes(iconData.readAsBytesSync());
+      print('Icon installed from rootBundle to ${iconDest.path}');
+    } catch (e) {
+      print('Failed to load icon from rootBundle: $e');
+      throw Exception('Could not install icon: $e');
     }
-    await iconSource.copy(iconDest.path);
   }
 
-  static Future<void> copyAppFiles(String assetsPath) async {
+  static Future<void> extractTarGz(
+      String tarPath, String destinationPath) async {
+    final result = await Process.run('tar', [
+      'xzf',
+      tarPath,
+      '-C',
+      destinationPath,
+    ]);
+
+    if (result.exitCode != 0) {
+      throw Exception('Failed to extract tar.gz file: ${result.stderr}');
+    }
+  }
+
+  static Future<void> copyAppFiles() async {
     final homeDir = Platform.environment['HOME'];
     if (homeDir == null) throw Exception('Could not get HOME directory');
 
     final appDir = Directory(path.join(homeDir, '.musily'));
     await appDir.create(recursive: true);
 
-    // Copy all files from assets recursively
-    final sourceDir = Directory(assetsPath);
-    await _copyDirectory(sourceDir, appDir);
+    try {
+      // Load the tar.gz file from Flutter assets
+      final tarGzData = await rootBundle.load('assets/app/musily.tar.gz');
 
-    // Make the executable file executable
-    final execFile = File(path.join(appDir.path, 'musily'));
-    if (await execFile.exists()) {
-      await Process.run('chmod', ['+x', execFile.path]);
-    }
-  }
+      // Create a temporary file to store the tar.gz
+      final tempTarPath = path.join(appDir.path, 'temp_musily.tar.gz');
+      final tempTarFile = File(tempTarPath);
+      await tempTarFile.writeAsBytes(tarGzData.buffer.asUint8List());
 
-  static Future<void> _copyDirectory(
-      Directory source, Directory destination) async {
-    await for (var entity in source.list(recursive: false)) {
-      if (entity is Directory) {
-        final newDirectory =
-            Directory(path.join(destination.path, path.basename(entity.path)));
-        await newDirectory.create();
-        await _copyDirectory(entity, newDirectory);
-      } else if (entity is File) {
-        await entity
-            .copy(path.join(destination.path, path.basename(entity.path)));
+      print('Tar.gz file created at: $tempTarPath');
+
+      // Extract the tar.gz file
+      await extractTarGz(tempTarPath, appDir.path);
+
+      // Remove the temporary tar.gz file after extraction
+      await tempTarFile.delete();
+      print('Temporary tar.gz file deleted');
+
+      // Make the executable file executable
+      final execFile = File(path.join(appDir.path, 'musily'));
+      if (await execFile.exists()) {
+        await Process.run('chmod', ['+x', execFile.path]);
+        print('Made executable file executable: ${execFile.path}');
+      } else {
+        print('Warning: Executable file not found at: ${execFile.path}');
       }
+    } catch (e) {
+      print('Error copying app files: $e');
+      throw Exception('Failed to copy app files: $e');
     }
   }
 
-  static Future<void> installDesktopFile(String assetsPath) async {
+  static Future<void> installDesktopFile() async {
     final homeDir = Platform.environment['HOME'];
     if (homeDir == null) throw Exception('Could not get HOME directory');
 
@@ -156,6 +177,11 @@ StartupWMClass=musily''';
 
     // Write/overwrite the desktop file
     await desktopDest.writeAsString(desktopContent);
+
+    // Make the desktop file executable
+    await Process.run('chmod', ['+x', desktopDest.path]);
+
+    print('Desktop file installed at: ${desktopDest.path}');
   }
 
   static Future<void> updateDesktopCache() async {

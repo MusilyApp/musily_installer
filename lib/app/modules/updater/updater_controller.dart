@@ -158,8 +158,7 @@ class UpdaterController extends GetxController with PageControllerMixin {
         throw Exception(l10n.unableToTerminate);
       }
 
-      const appPath = 'assets/app';
-      await LinuxService.copyAppFiles(appPath);
+      await LinuxService.copyAppFiles();
 
       terminalOutput += l10n.restoringConfig + '\n';
       installProgress = 0.8;
