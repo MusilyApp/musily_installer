@@ -1,6 +1,16 @@
 import 'dart:io';
 
-enum PackageManager { apt, dnf, pacman, unknown }
+enum PackageManager {
+  apt,
+  dnf,
+  pacman,
+  zypper,
+  apk,
+  xbps,
+  nix,
+  emerge,
+  unknown,
+}
 
 class LinuxDependencyService {
   static final Map<PackageManager, Map<String, String>> _packageNames = {
@@ -25,26 +35,60 @@ class LinuxDependencyService {
       'gnomekeyring': 'gnome-keyring',
       'appindicator': 'libappindicator-gtk3',
     },
+    PackageManager.zypper: {
+      'libmpv': 'libmpv-devel',
+      'libsecret': 'libsecret-devel',
+      'libjsoncpp': 'jsoncpp-devel',
+      'gnomekeyring': 'gnome-keyring',
+      'appindicator': 'libappindicator3-1',
+    },
+    PackageManager.apk: {
+      'libmpv': 'mpv-dev',
+      'libsecret': 'libsecret-dev',
+      'libjsoncpp': 'jsoncpp-dev',
+      'gnomekeyring': 'gnome-keyring',
+      'appindicator': 'libappindicator',
+    },
+    PackageManager.xbps: {
+      'libmpv': 'mpv-devel',
+      'libsecret': 'libsecret-devel',
+      'libjsoncpp': 'jsoncpp-devel',
+      'gnomekeyring': 'gnome-keyring',
+      'appindicator': 'libappindicator-gtk3',
+    },
+    PackageManager.nix: {
+      'libmpv': 'libmpv',
+      'libsecret': 'libsecret',
+      'libjsoncpp': 'jsoncpp',
+      'gnomekeyring': 'gnome-keyring',
+      'appindicator': 'libappindicator',
+    },
+    PackageManager.emerge: {
+      'libmpv': 'media-video/mpv',
+      'libsecret': 'gnome-base/libsecret',
+      'libjsoncpp': 'dev-libs/jsoncpp',
+      'gnomekeyring': 'gnome-base/gnome-keyring',
+      'appindicator': 'dev-libs/libappindicator',
+    },
   };
 
   static Future<PackageManager> _detectPackageManager() async {
-    try {
-      // Check for apt (Debian/Ubuntu)
-      if (await _commandExists('apt')) {
-        return PackageManager.apt;
+    final managers = {
+      'apt': PackageManager.apt,
+      'dnf': PackageManager.dnf,
+      'pacman': PackageManager.pacman,
+      'zypper': PackageManager.zypper,
+      'apk': PackageManager.apk,
+      'xbps-install': PackageManager.xbps,
+      'nix-env': PackageManager.nix,
+      'emerge': PackageManager.emerge,
+    };
+    for (final entry in managers.entries) {
+      if (await _commandExists(entry.key)) {
+        return entry.value;
       }
-      // Check for dnf (Fedora)
-      if (await _commandExists('dnf')) {
-        return PackageManager.dnf;
-      }
-      // Check for pacman (Arch)
-      if (await _commandExists('pacman')) {
-        return PackageManager.pacman;
-      }
-      return PackageManager.unknown;
-    } catch (e) {
-      return PackageManager.unknown;
     }
+    return PackageManager.unknown;
   }
 
   static Future<bool> _commandExists(String command) async {
@@ -76,30 +120,33 @@ class LinuxDependencyService {
   }
 
   static Future<bool> _isPackageInstalled(
-    String packageName,
-    PackageManager manager,
-  ) async {
+      String packageName, PackageManager manager) async {
     try {
       switch (manager) {
         case PackageManager.apt:
-          // Use dpkg-query instead of dpkg -s for more reliable status checking
           final result = await Process.run(
               'dpkg-query', ['-W', '-f=\${Status}', packageName]);
           return result.exitCode == 0 &&
               result.stdout.toString().contains('install ok installed');
         case PackageManager.dnf:
-          // Use rpm -q with --quiet flag for cleaner output
-          final result =
-              await Process.run('rpm', ['-q', '--quiet', packageName]);
+        case PackageManager.zypper:
+        case PackageManager.xbps:
+        case PackageManager.emerge:
+          final result = await Process.run('rpm', ['-q', packageName]);
           return result.exitCode == 0;
         case PackageManager.pacman:
-          // Use -Q instead of -Qi for more reliable checking
           final result = await Process.run('pacman', ['-Q', packageName]);
           return result.exitCode == 0;
+        case PackageManager.apk:
+          final result = await Process.run('apk', ['info', packageName]);
+          return result.stdout.toString().contains(packageName);
+        case PackageManager.nix:
+          final result = await Process.run('nix-env', ['-q', packageName]);
+          return result.stdout.toString().contains(packageName);
         case PackageManager.unknown:
           return false;
       }
-    } catch (e) {
+    } catch (_) {
       return false;
     }
   }
@@ -124,6 +171,16 @@ class LinuxDependencyService {
           return _installWithDnf(packages);
         case PackageManager.pacman:
           return _installWithPacman(packages);
+        case PackageManager.zypper:
+          return _installWithZypper(packages);
+        case PackageManager.apk:
+          return _installWithApk(packages);
+        case PackageManager.xbps:
+          return _installWithXbps(packages);
+        case PackageManager.nix:
+          return _installWithNix(packages);
+        case PackageManager.emerge:
+          return _installWithEmerge(packages);
         case PackageManager.unknown:
           return false;
       }
@@ -133,31 +190,55 @@ class LinuxDependencyService {
   }
 
   static Future<bool> _installWithApt(List<String> packages) async {
-    final result = await Process.run('pkexec', [
+    final result = await _runWithPrivileges([
       'bash',
       '-c',
-      'apt-get update && apt-get install -y ${packages.join(" ")}',
+      'apt-get update && apt-get install -y ${packages.join(" ")}'
     ]);
     return result.exitCode == 0;
   }
 
   static Future<bool> _installWithDnf(List<String> packages) async {
-    final result = await Process.run('pkexec', [
-      'dnf',
-      'install',
-      '-y',
-      ...packages,
-    ]);
+    final result =
+        await _runWithPrivileges(['dnf', 'install', '-y', ...packages]);
     return result.exitCode == 0;
   }
 
-  static Future<bool> _installWithPacman(List<String> packages) async {
-    final result = await Process.run('pkexec', [
-      'pacman',
-      '-Sy',
-      '--noconfirm',
-      ...packages,
-    ]);
+  static Future<bool> _installWithPacman(List<String> packages) {
+    final result =
+        _runWithPrivileges(['pacman', '-Sy', '--noconfirm', ...packages]);
+    return result.then((result) => result.exitCode == 0);
+  }
+
+  static Future<bool> _installWithZypper(List<String> packages) async {
+    final result = await _runWithPrivileges(
+        ['zypper', '--non-interactive', 'install', ...packages]);
     return result.exitCode == 0;
+  }
+
+  static Future<bool> _installWithApk(List<String> packages) async {
+    final result = await _runWithPrivileges(['apk', 'add', ...packages]);
+    return result.exitCode == 0;
+  }
+
+  static Future<bool> _installWithXbps(List<String> packages) async {
+    final result =
+        await _runWithPrivileges(['xbps-install', '-Sy', ...packages]);
+    return result.exitCode == 0;
+  }
+
+  static Future<bool> _installWithNix(List<String> packages) async {
+    final result = await _runWithPrivileges(
+        ['nix-env', '-iA', ...packages.map((e) => 'nixpkgs.$e')]);
+    return result.exitCode == 0;
+  }
+
+  static Future<bool> _installWithEmerge(List<String> packages) async {
+    final result = await _runWithPrivileges(['emerge', ...packages]);
+    return result.exitCode == 0;
+  }
+
+  static Future<ProcessResult> _runWithPrivileges(List<String> args) {
+    return Process.run('pkexec', args);
   }
 }
