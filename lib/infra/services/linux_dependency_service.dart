@@ -20,6 +20,7 @@ class LinuxDependencyService {
       'libjsoncpp': 'libjsoncpp-dev',
       'gnomekeyring': 'gnome-keyring',
       'appindicator': 'libayatana-appindicator3-dev',
+      'curl': 'curl',
     },
     PackageManager.dnf: {
       'libmpv': 'mpv-libs-devel',
@@ -27,6 +28,7 @@ class LinuxDependencyService {
       'libjsoncpp': 'jsoncpp-devel',
       'gnomekeyring': 'gnome-keyring',
       'appindicator': 'libappindicator-gtk3-devel',
+      'curl': 'curl',
     },
     PackageManager.pacman: {
       'libmpv': 'mpv',
@@ -34,6 +36,7 @@ class LinuxDependencyService {
       'libjsoncpp': 'jsoncpp',
       'gnomekeyring': 'gnome-keyring',
       'appindicator': 'libappindicator-gtk3',
+      'curl': 'curl',
     },
     PackageManager.zypper: {
       'libmpv': 'libmpv-devel',
@@ -41,6 +44,7 @@ class LinuxDependencyService {
       'libjsoncpp': 'jsoncpp-devel',
       'gnomekeyring': 'gnome-keyring',
       'appindicator': 'libappindicator3-1',
+      'curl': 'curl',
     },
     PackageManager.apk: {
       'libmpv': 'mpv-dev',
@@ -48,6 +52,7 @@ class LinuxDependencyService {
       'libjsoncpp': 'jsoncpp-dev',
       'gnomekeyring': 'gnome-keyring',
       'appindicator': 'libappindicator',
+      'curl': 'curl',
     },
     PackageManager.xbps: {
       'libmpv': 'mpv-devel',
@@ -55,6 +60,7 @@ class LinuxDependencyService {
       'libjsoncpp': 'jsoncpp-devel',
       'gnomekeyring': 'gnome-keyring',
       'appindicator': 'libappindicator-gtk3',
+      'curl': 'curl',
     },
     PackageManager.nix: {
       'libmpv': 'libmpv',
@@ -62,6 +68,7 @@ class LinuxDependencyService {
       'libjsoncpp': 'jsoncpp',
       'gnomekeyring': 'gnome-keyring',
       'appindicator': 'libappindicator',
+      'curl': 'curl',
     },
     PackageManager.emerge: {
       'libmpv': 'media-video/mpv',
@@ -69,6 +76,7 @@ class LinuxDependencyService {
       'libjsoncpp': 'dev-libs/jsoncpp',
       'gnomekeyring': 'gnome-base/gnome-keyring',
       'appindicator': 'dev-libs/libappindicator',
+      'curl': 'net-misc/curl',
     },
   };
 
