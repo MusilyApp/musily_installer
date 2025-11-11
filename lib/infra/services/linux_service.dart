@@ -164,9 +164,10 @@ Comment=A great music app.
 Categories=AudioVideo;
 
 Icon=app.musily.music
-Exec=$homeDir/.musily/musily
+Exec=$homeDir/.musily/musily %u
 Terminal=false
-StartupWMClass=musily''';
+StartupWMClass=musily
+MimeType=x-scheme-handler/musily;''';
 
     final desktopDest = File(
       path.join(
