@@ -23,7 +23,7 @@ class LinuxDependencyService {
       'curl': 'curl',
     },
     PackageManager.dnf: {
-      'libmpv': 'mpv-libs-devel',
+      'libmpv': 'mpv-devel',
       'libsecret': 'libsecret-devel',
       'libjsoncpp': 'jsoncpp-devel',
       'gnomekeyring': 'gnome-keyring',
