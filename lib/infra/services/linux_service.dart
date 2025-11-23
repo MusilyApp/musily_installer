@@ -155,7 +155,7 @@ class LinuxService {
         Directory(path.join(homeDir, '.local', 'share', 'applications'));
     await desktopDir.create(recursive: true);
 
-    final desktopContent = '''[Desktop Entry]
+    const desktopContent = '''[Desktop Entry]
 Version=1.0
 Type=Application
 
@@ -164,10 +164,35 @@ Comment=A great music app.
 Categories=AudioVideo;
 
 Icon=app.musily.music
-Exec=$homeDir/.musily/musily %u
+Exec=\$HOME/.musily/musily %U
 Terminal=false
 StartupWMClass=musily
-MimeType=x-scheme-handler/musily;''';
+
+MimeType=x-scheme-handler/musily;application/zip;
+
+Actions=Uninstall;
+
+[Desktop Action Uninstall]
+Name[ar]=إلغاء التثبيت
+Name[de]=Deinstallieren
+Name[es]=Desinstalar
+Name[fr]=Désinstaller
+Name[hi]=अनइंस्टॉल करें
+Name[id]=Copot pemasangan
+Name[it]=Disinstalla
+Name[ja]=アンインストール
+Name[ko]=제거
+Name[pl]=Odinstaluj
+Name[pt]=Desinstalar
+Name[ru]=Удалить
+Name[th]=ถอนการติดตั้ง
+Name[tr]=Kaldır
+Name[uk]=Видалити
+Name[zh]=卸载
+Name[en]=Uninstall
+
+Exec=\$HOME/.musily/data/flutter_assets/assets/uninstaller/musily_installer/musily_installer
+''';
 
     final desktopDest = File(
       path.join(
