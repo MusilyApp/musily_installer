@@ -27,7 +27,7 @@ class LinuxDependencyService {
       'libsecret': 'libsecret-devel',
       'libjsoncpp': 'jsoncpp-devel',
       'gnomekeyring': 'gnome-keyring',
-      'appindicator': 'libappindicator-gtk3-devel',
+      'appindicator': 'libayatana-appindicator-gtk3-devel',
       'curl': 'curl',
     },
     PackageManager.pacman: {
@@ -35,7 +35,7 @@ class LinuxDependencyService {
       'libsecret': 'libsecret',
       'libjsoncpp': 'jsoncpp',
       'gnomekeyring': 'gnome-keyring',
-      'appindicator': 'libappindicator-gtk3',
+      'appindicator': 'libayatana-appindicator',
       'curl': 'curl',
     },
     PackageManager.zypper: {
@@ -43,7 +43,7 @@ class LinuxDependencyService {
       'libsecret': 'libsecret-devel',
       'libjsoncpp': 'jsoncpp-devel',
       'gnomekeyring': 'gnome-keyring',
-      'appindicator': 'libappindicator3-1',
+      'appindicator': 'libayatana-appindicator',
       'curl': 'curl',
     },
     PackageManager.apk: {
@@ -51,7 +51,7 @@ class LinuxDependencyService {
       'libsecret': 'libsecret-dev',
       'libjsoncpp': 'jsoncpp-dev',
       'gnomekeyring': 'gnome-keyring',
-      'appindicator': 'libappindicator',
+      'appindicator': 'libayatana-appindicator-dev',
       'curl': 'curl',
     },
     PackageManager.xbps: {
@@ -59,7 +59,7 @@ class LinuxDependencyService {
       'libsecret': 'libsecret-devel',
       'libjsoncpp': 'jsoncpp-devel',
       'gnomekeyring': 'gnome-keyring',
-      'appindicator': 'libappindicator-gtk3',
+      'appindicator': 'libayatana-appindicator',
       'curl': 'curl',
     },
     PackageManager.nix: {
@@ -67,7 +67,7 @@ class LinuxDependencyService {
       'libsecret': 'libsecret',
       'libjsoncpp': 'jsoncpp',
       'gnomekeyring': 'gnome-keyring',
-      'appindicator': 'libappindicator',
+      'appindicator': 'libayatana-appindicator',
       'curl': 'curl',
     },
     PackageManager.emerge: {
@@ -75,7 +75,7 @@ class LinuxDependencyService {
       'libsecret': 'gnome-base/libsecret',
       'libjsoncpp': 'dev-libs/jsoncpp',
       'gnomekeyring': 'gnome-base/gnome-keyring',
-      'appindicator': 'dev-libs/libappindicator',
+      'appindicator': 'dev-libs/libayatana-appindicator',
       'curl': 'net-misc/curl',
     },
   };
